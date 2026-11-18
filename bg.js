@@ -357,52 +357,43 @@
         requestAnimationFrame(loop);
     }
 
-    /* ---------- 2. TYPING TAGLINE IN THE HERO ---------- */
+    /* ---------- 2. ROLES SLIDESHOW IN THE HERO ---------- */
 
-    function startTagline() {
-        var el = document.getElementById("typed");
-        if (!el) return;
+    function startSlides() {
+        var box = document.querySelector(".slider");
+        if (!box) return;
 
-        var phrases = [
-            "Web Developer",
-            "Python Programmer",
-            "AI Enthusiast",
-            "IT Support & Systems Admin"
-        ];
+        var slides = box.querySelectorAll(".slide");
+        var dotsBox = document.getElementById("slide-dots");
+        var dots = [];
+        var current = 0;
 
-        if (reduceMotion) {
-            el.textContent = phrases[0];
-            return;
-        }
-
-        var p = 0;
-        var c = 0;
-        var deleting = false;
-
-        function step() {
-            var word = phrases[p];
-            if (!deleting) {
-                c++;
-                el.textContent = word.slice(0, c);
-                if (c === word.length) {
-                    deleting = true;
-                    setTimeout(step, 1700);
-                    return;
-                }
-                setTimeout(step, 90);
-            } else {
-                c--;
-                el.textContent = word.slice(0, c);
-                if (c === 0) {
-                    deleting = false;
-                    p = (p + 1) % phrases.length;
-                    setTimeout(step, 400);
-                    return;
-                }
-                setTimeout(step, 45);
+        if (dotsBox) {
+            for (var i = 0; i < slides.length; i++) {
+                var dot = document.createElement("span");
+                dot.className = "dot";
+                dotsBox.appendChild(dot);
+                dots.push(dot);
             }
+            dots[0].classList.add("active");
         }
-        step();
+
+        slides[0].classList.add("active");
+        if (slides.length < 2) return;
+
+        setInterval(function () {
+            var old = slides[current];
+            old.classList.remove("active");
+            old.classList.add("leaving");
+            setTimeout(function () { old.classList.remove("leaving"); }, 700);
+
+            if (dots.length) { dots[current].classList.remove("active"); }
+            current = (current + 1) % slides.length;
+
+            slides[current].classList.remove("leaving");
+            slides[current].classList.add("active");
+            if (dots.length) { dots[current].classList.add("active"); }
+        }, 2600);
     }
 
     if (BACKGROUND === "code") {
@@ -410,5 +401,5 @@
     } else {
         startNetworkBackground();
     }
-    startTagline();
+    startSlides();
 })();
