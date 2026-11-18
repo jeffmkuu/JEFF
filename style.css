@@ -691,3 +691,71 @@ nav a:focus-visible{
         font-size:18px;
     }
 }
+
+
+/* ROLES SLIDESHOW */
+
+.slides{
+    display:inline-grid;
+    overflow:hidden;
+    vertical-align:bottom;
+    max-width:100%;
+}
+
+.slide{
+    grid-area:1 / 1;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateY(100%);
+    transition:transform 0.6s ease, opacity 0.6s ease;
+}
+
+.slide.active{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.slide.leaving{
+    opacity:0;
+    transform:translateY(-100%);
+}
+
+.slide-dots{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+}
+
+.slide-dots .dot{
+    width:28px;
+    height:4px;
+    border-radius:2px;
+    background:#0b3a3a;
+    transition:background 0.4s ease;
+}
+
+.slide-dots .dot.active{
+    background:#00ffff;
+}
+
+@media(max-width:900px){
+
+    .typing-line{
+        font-size:19px;
+        min-height:26px;
+    }
+
+    .slide-dots{
+        justify-content:center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+
+    .slide,
+    .slide.active,
+    .slide.leaving{
+        transform:none;
+        transition:opacity 0.2s ease;
+    }
+}
