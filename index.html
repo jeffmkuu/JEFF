@@ -11,6 +11,7 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>document.documentElement.classList.add("js");</script>
 </head>
 
 <body>
@@ -53,18 +54,9 @@
                 my portfolio
             </h1>
 
-            <!-- Roles slideshow: add or remove a <span class="slide"> to change the list -->
-            <div class="typing-line slider" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
-                <span class="prompt">&gt;</span>
-                <span class="slides" aria-hidden="true">
-                    <span class="slide">Web Developer</span>
-                    <span class="slide">System Developer</span>
-                    <span class="slide">Python Programmer</span>
-                    <span class="slide">AI Enthusiast</span>
-                    <span class="slide">IT Support &amp; Systems Admin</span>
-                </span>
+            <div class="typing-line" aria-label="Web Developer, Python Programmer, AI Enthusiast">
+                <span class="prompt">&gt;</span> <span id="typed"></span><span class="caret"></span>
             </div>
-            <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
 
             <p>
                 I am a computer scientist with a passion for
@@ -305,19 +297,16 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
-    <script>
-        /* Menu and page switching: each section opens on its own.
-           The "js" class is added only when this script runs, so if anything
-           goes wrong the sections simply show one after another instead of a blank page. */
-        (function () {
-            document.documentElement.classList.add("js");
+    <script src="bg.js"></script>
 
+    <script>
+        /* Menu and page switching: each section opens on its own */
+        (function () {
             var pageNames = ["home", "services", "projects", "skills", "passion", "contact"];
             var menuBtn = document.getElementById("menu-btn");
             var menuList = document.getElementById("menu-list");
 
             function closeMenu() {
-                if (!menuBtn || !menuList) { return; }
                 menuList.classList.remove("open");
                 menuBtn.setAttribute("aria-expanded", "false");
             }
@@ -334,38 +323,32 @@
                     a.classList.toggle("active", a.getAttribute("href") === "#" + name);
                 });
 
-                if (menuBtn) {
-                    menuBtn.classList.toggle("current", name !== "home");
-                }
+                menuBtn.classList.toggle("current", ["services", "projects", "skills", "passion", "contact"].indexOf(name) !== -1);
 
                 window.scrollTo(0, 0);
                 closeMenu();
             }
 
+            menuBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                var open = menuList.classList.toggle("open");
+                menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+            });
+
+            menuList.addEventListener("click", closeMenu);
+
+            document.addEventListener("click", function (e) {
+                if (!menuList.contains(e.target)) { closeMenu(); }
+            });
+
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") { closeMenu(); menuBtn.focus(); }
+            });
+
             window.addEventListener("hashchange", showPage);
             showPage();
-
-            if (menuBtn && menuList) {
-                menuBtn.addEventListener("click", function (e) {
-                    e.stopPropagation();
-                    var open = menuList.classList.toggle("open");
-                    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-                });
-
-                menuList.addEventListener("click", closeMenu);
-
-                document.addEventListener("click", function (e) {
-                    if (!menuList.contains(e.target)) { closeMenu(); }
-                });
-
-                document.addEventListener("keydown", function (e) {
-                    if (e.key === "Escape") { closeMenu(); menuBtn.focus(); }
-                });
-            }
         })();
     </script>
-
-    <script src="bg.js"></script>
 
     <script>
         const form = document.getElementById("contact-form");
