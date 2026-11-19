@@ -11,7 +11,6 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>document.documentElement.classList.add("js");</script>
 </head>
 
 <body>
@@ -21,7 +20,10 @@
 
     <!-- NAVBAR -->
     <header>
-        <a href="#home" class="logo">Geofrey Waithaka</a>
+        <a href="#home" class="logo">
+            <span>Geofrey Waithaka</span>
+            <img class="logo-selfie" src="selfie.jpg" alt="Geofrey Waithaka" onerror="this.remove()">
+        </a>
 
         <nav>
             <a href="#home">Home</a>
@@ -54,9 +56,18 @@
                 my portfolio
             </h1>
 
-            <div class="typing-line" aria-label="Web Developer, Python Programmer, AI Enthusiast">
-                <span class="prompt">&gt;</span> <span id="typed"></span><span class="caret"></span>
+            <!-- Roles slideshow: add or remove a <span class="slide"> to change the list -->
+            <div class="typing-line slider" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
+                <span class="prompt">&gt;</span>
+                <span class="slides" aria-hidden="true">
+                    <span class="slide">Web Developer</span>
+                    <span class="slide">System Developer</span>
+                    <span class="slide">Python Programmer</span>
+                    <span class="slide">AI Enthusiast</span>
+                    <span class="slide">IT Support &amp; Systems Admin</span>
+                </span>
             </div>
+            <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
 
             <p>
                 I am a computer scientist with a passion for
@@ -297,16 +308,26 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
-    <script src="bg.js"></script>
+    <!-- BACKGROUND MUSIC: off by default; the round button plays or mutes it.
+         If music.mp3 is not uploaded, the button hides itself. -->
+    <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
+    <button type="button" id="music-btn" class="music-btn hint" aria-label="Play music" title="Play music">
+        <i class="fa-solid fa-volume-xmark"></i>
+    </button>
 
     <script>
-        /* Menu and page switching: each section opens on its own */
+        /* Menu and page switching: each section opens on its own.
+           The "js" class is added only when this script runs, so if anything
+           goes wrong the sections simply show one after another instead of a blank page. */
         (function () {
+            document.documentElement.classList.add("js");
+
             var pageNames = ["home", "services", "projects", "skills", "passion", "contact"];
             var menuBtn = document.getElementById("menu-btn");
             var menuList = document.getElementById("menu-list");
 
             function closeMenu() {
+                if (!menuBtn || !menuList) { return; }
                 menuList.classList.remove("open");
                 menuBtn.setAttribute("aria-expanded", "false");
             }
@@ -323,30 +344,97 @@
                     a.classList.toggle("active", a.getAttribute("href") === "#" + name);
                 });
 
-                menuBtn.classList.toggle("current", ["services", "projects", "skills", "passion", "contact"].indexOf(name) !== -1);
+                if (menuBtn) {
+                    menuBtn.classList.toggle("current", name !== "home");
+                }
 
                 window.scrollTo(0, 0);
                 closeMenu();
             }
 
-            menuBtn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                var open = menuList.classList.toggle("open");
-                menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-            });
-
-            menuList.addEventListener("click", closeMenu);
-
-            document.addEventListener("click", function (e) {
-                if (!menuList.contains(e.target)) { closeMenu(); }
-            });
-
-            document.addEventListener("keydown", function (e) {
-                if (e.key === "Escape") { closeMenu(); menuBtn.focus(); }
-            });
-
             window.addEventListener("hashchange", showPage);
             showPage();
+
+            if (menuBtn && menuList) {
+                menuBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    var open = menuList.classList.toggle("open");
+                    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+                });
+
+                menuList.addEventListener("click", closeMenu);
+
+                document.addEventListener("click", function (e) {
+                    if (!menuList.contains(e.target)) { closeMenu(); }
+                });
+
+                document.addEventListener("keydown", function (e) {
+                    if (e.key === "Escape") { closeMenu(); menuBtn.focus(); }
+                });
+            }
+        })();
+    </script>
+
+    <script src="bg.js"></script>
+
+    <script>
+        /* Music: stays off until the visitor presses the round speaker button,
+           and the same button switches it off again. */
+        (function () {
+            var audio = document.getElementById("bg-music");
+            var btn = document.getElementById("music-btn");
+            if (!audio || !btn) { return; }
+
+            var icon = btn.querySelector("i");
+            var started = false;      // has the music begun
+            var userMuted = false;    // did the visitor switch it off
+
+            try { userMuted = localStorage.getItem("music") === "off"; } catch (e) {}
+
+            audio.volume = 0.25;
+
+            function save(value) {
+                try { localStorage.setItem("music", value); } catch (e) {}
+            }
+
+            function paint() {
+                var playing = started && !audio.paused;
+                icon.className = playing ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+                btn.setAttribute("aria-label", playing ? "Mute music" : "Play music");
+                btn.title = playing ? "Mute music" : "Play music";
+                btn.classList.toggle("hint", !started && !userMuted);
+            }
+
+            function play() {
+                var p = audio.play();
+                if (p && p.then) {
+                    p.then(function () { started = true; paint(); })
+                     .catch(function () {
+                         if (audio.error) { btn.hidden = true; }
+                         paint();
+                     });
+                }
+            }
+
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                if (!audio.paused) {
+                    audio.pause();
+                    userMuted = true;
+                    save("off");
+                    paint();
+                } else {
+                    userMuted = false;
+                    save("on");
+                    play();
+                }
+            });
+
+            // No music file uploaded: hide the button
+            audio.addEventListener("error", function () { btn.hidden = true; });
+            if (audio.error) { btn.hidden = true; }
+
+            paint();
         })();
     </script>
 

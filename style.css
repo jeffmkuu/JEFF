@@ -759,3 +759,92 @@ nav a:focus-visible{
         transition:opacity 0.2s ease;
     }
 }
+
+
+/* MUSIC BUTTON */
+
+.music-btn{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:52px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#071111;
+    color:#00ffff;
+    border:2px solid #00ffff;
+    font-size:20px;
+    cursor:pointer;
+    z-index:1200;
+    box-shadow:0 0 15px rgba(0, 255, 255, 0.35);
+    transition:0.3s;
+}
+
+.music-btn[hidden]{
+    display:none;
+}
+
+.music-btn:hover{
+    background:#00ffff;
+    color:black;
+}
+
+.music-btn:focus-visible{
+    outline:3px solid #00ffff;
+    outline-offset:3px;
+}
+
+.music-btn.hint{
+    animation:music-pulse 2s ease-out infinite;
+}
+
+@keyframes music-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(0, 255, 255, 0.55); }
+    100%{ box-shadow:0 0 0 18px rgba(0, 255, 255, 0); }
+}
+
+@media(max-width:900px){
+    .music-btn{
+        right:16px;
+        bottom:16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .music-btn.hint{
+        animation:none;
+    }
+}
+
+
+/* SELFIE CIRCLE NEXT TO THE NAME */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-selfie{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #00ffff;
+    box-shadow:0 0 14px rgba(0, 255, 255, 0.55);
+    flex:none;
+}
+
+@media(max-width:900px){
+    .logo{
+        gap:10px;
+    }
+
+    .logo-selfie{
+        width:36px;
+        height:36px;
+    }
+}
