@@ -11,7 +11,8 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-   
+    <!-- Sliding words under the heading. The styling is here (not in style.css)
+         so it always loads together with the words. -->
     <style>
         .ticker{
             margin-top:24px;
@@ -50,6 +51,7 @@
             to{ transform:translateX(-100%); }
         }
 
+        /* Pause while the mouse is over it (computers only, so a tap on a phone does not freeze it) */
         @media (hover:hover){
             .ticker:hover .ticker-track{
                 animation-play-state:paused;
@@ -67,6 +69,7 @@
             }
         }
 
+        /* Visitors whose device is set to "reduce motion" see the words standing still */
         @media (prefers-reduced-motion: reduce){
             .ticker-track{
                 animation:none;
@@ -120,7 +123,8 @@
                 my portfolio
             </h1>
 
-            <!-- SLIDING WORDS:  -->
+            <!-- SLIDING WORDS: slide slowly from right to left like a news ticker.
+                 To change the words, edit the <span> items below. -->
             <div class="ticker" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
                 <div class="ticker-track" aria-hidden="true">
                     <span>Web Developer</span><i>&#9670;</i>
@@ -183,19 +187,76 @@
 
         <h2>My Services</h2>
 
-        <div class="service-box">
-            <h3>Website Development</h3>
-            <p>I create modern and responsive websites.</p>
-        </div>
+        <!-- To add a service, copy one <div class="service-box"> block and change the icon, title and text.
+             Icons come from Font Awesome (fontawesome.com/icons). -->
+        <div class="services-grid">
 
-        <div class="service-box">
-            <h3>Python Programming</h3>
-            <p>I develop Python projects and AI applications.</p>
-        </div>
+            <div class="service-box">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                <h3>Website Development</h3>
+                <p>I create modern, responsive websites for businesses, schools and personal brands.</p>
+            </div>
 
-        <div class="service-box">
-            <h3>Graphic Design</h3>
-            <p>I create posters, logos and business graphics.</p>
+            <div class="service-box">
+                <i class="fa-solid fa-store" aria-hidden="true"></i>
+                <h3>Business Management Systems</h3>
+                <p>Custom systems for shops, salons and restaurants to track sales, stock, expenses, customers and reports.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-school" aria-hidden="true"></i>
+                <h3>School Management Systems</h3>
+                <p>Student registration, marks entry, and online portals where students and parents can see results.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-code" aria-hidden="true"></i>
+                <h3>Python Programming</h3>
+                <p>I develop Python projects, automation tools and AI applications.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                <h3>AI Assistants</h3>
+                <p>Smart assistants that answer questions from a business&rsquo;s own data, like my &ldquo;Ask My Business&rdquo; project.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-database" aria-hidden="true"></i>
+                <h3>Database Design &amp; Management</h3>
+                <p>I design and manage MySQL databases that keep your records organised and easy to search.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+                <h3>Networking</h3>
+                <p>Setting up and troubleshooting small office and home networks.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-server" aria-hidden="true"></i>
+                <h3>Systems Administration</h3>
+                <p>Managing computers, user accounts and software so an office or school runs smoothly.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
+                <h3>IT Support &amp; Troubleshooting</h3>
+                <p>Fixing software and computer problems, and installing and setting up programs on Windows.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-palette" aria-hidden="true"></i>
+                <h3>Graphic Design</h3>
+                <p>I create posters, logos and business graphics.</p>
+            </div>
+
+            <div class="service-box">
+                <i class="fa-solid fa-film" aria-hidden="true"></i>
+                <h3>Video Editing &amp; Videography</h3>
+                <p>Filming and editing videos and promotional clips.</p>
+            </div>
+
         </div>
 
     </section>
@@ -348,7 +409,10 @@
         <p>Phone: <a href="tel:+254115430100">+254115430100</a></p>
         <p>Location: Nairobi, Kenya</p>
 
-       
+        <!--
+            This form sends the message to your email through Formspree.
+            The form ID (xzervnyk) in the action link below comes from your Formspree form.
+        -->
         <form id="contact-form" class="contact-form"
               action="https://formspree.io/f/xzervnyk" method="POST">
 
@@ -372,14 +436,17 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
-    <!-- BACKGROUND MUSIC:  -->
+    <!-- BACKGROUND MUSIC: plays when the visitor arrives (on their first tap if the browser blocks sound); the round button mutes it.
+         If music.mp3 is not uploaded, the button hides itself. -->
     <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
     <button type="button" id="music-btn" class="music-btn hint" aria-label="Play music" title="Play music">
         <i class="fa-solid fa-volume-xmark"></i>
     </button>
 
     <script>
-
+        /* Menu and page switching: each section opens on its own.
+           The "js" class is added only when this script runs, so if anything
+           goes wrong the sections simply show one after another instead of a blank page. */
         (function () {
             document.documentElement.classList.add("js");
 
@@ -439,7 +506,9 @@
     <script src="bg.js"></script>
 
     <script>
-
+        /* Music: plays when the visitor arrives and the round speaker button mutes it.
+           Browsers often block sound until the visitor does something on the page,
+           so if that happens the music starts on their first tap, click or key press. */
         (function () {
             var audio = document.getElementById("bg-music");
             var btn = document.getElementById("music-btn");
@@ -475,6 +544,7 @@
                 }
             }
 
+            // If the browser blocked the music, start it on the first tap, click or key press
             var gestureEvents = ["click", "touchend", "keydown"];
 
             function onGesture(e) {
