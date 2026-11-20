@@ -11,8 +11,7 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Sliding words under the heading. The styling is here (not in style.css)
-         so it always loads together with the words. -->
+   
     <style>
         .ticker{
             margin-top:24px;
@@ -51,7 +50,6 @@
             to{ transform:translateX(-100%); }
         }
 
-        /* Pause while the mouse is over it (computers only, so a tap on a phone does not freeze it) */
         @media (hover:hover){
             .ticker:hover .ticker-track{
                 animation-play-state:paused;
@@ -69,7 +67,6 @@
             }
         }
 
-        /* Visitors whose device is set to "reduce motion" see the words standing still */
         @media (prefers-reduced-motion: reduce){
             .ticker-track{
                 animation:none;
@@ -123,8 +120,7 @@
                 my portfolio
             </h1>
 
-            <!-- SLIDING WORDS: slide slowly from right to left like a news ticker.
-                 To change the words, edit the <span> items below. -->
+            <!-- SLIDING WORDS:  -->
             <div class="ticker" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
                 <div class="ticker-track" aria-hidden="true">
                     <span>Web Developer</span><i>&#9670;</i>
@@ -352,10 +348,7 @@
         <p>Phone: <a href="tel:+254115430100">+254115430100</a></p>
         <p>Location: Nairobi, Kenya</p>
 
-        <!--
-            This form sends the message to your email through Formspree.
-            The form ID (xzervnyk) in the action link below comes from your Formspree form.
-        -->
+       
         <form id="contact-form" class="contact-form"
               action="https://formspree.io/f/xzervnyk" method="POST">
 
@@ -379,17 +372,14 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
-    <!-- BACKGROUND MUSIC: plays when the visitor arrives (on their first tap if the browser blocks sound); the round button mutes it.
-         If music.mp3 is not uploaded, the button hides itself. -->
+    <!-- BACKGROUND MUSIC:  -->
     <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
     <button type="button" id="music-btn" class="music-btn hint" aria-label="Play music" title="Play music">
         <i class="fa-solid fa-volume-xmark"></i>
     </button>
 
     <script>
-        /* Menu and page switching: each section opens on its own.
-           The "js" class is added only when this script runs, so if anything
-           goes wrong the sections simply show one after another instead of a blank page. */
+
         (function () {
             document.documentElement.classList.add("js");
 
@@ -449,9 +439,7 @@
     <script src="bg.js"></script>
 
     <script>
-        /* Music: plays when the visitor arrives and the round speaker button mutes it.
-           Browsers often block sound until the visitor does something on the page,
-           so if that happens the music starts on their first tap, click or key press. */
+
         (function () {
             var audio = document.getElementById("bg-music");
             var btn = document.getElementById("music-btn");
@@ -487,7 +475,6 @@
                 }
             }
 
-            // If the browser blocked the music, start it on the first tap, click or key press
             var gestureEvents = ["click", "touchend", "keydown"];
 
             function onGesture(e) {
