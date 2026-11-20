@@ -11,7 +11,74 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Sliding words under the heading. The styling is here (not in style.css)
+         so it always loads together with the words. -->
+    <style>
+        .ticker{
+            margin-top:24px;
+            max-width:600px;
+            height:48px;
+            display:flex;
+            align-items:center;
+            overflow:hidden;
+            background:#071111;
+            border:2px solid #00ffff;
+            border-radius:10px;
+            box-shadow:0 0 18px rgba(0, 255, 255, 0.25);
+        }
+
+        .ticker-track{
+            flex:none;
+            display:inline-block;
+            white-space:nowrap;
+            padding-left:100%;
+            font-size:20px;
+            color:#ffffff;
+            animation:ticker-scroll 45s linear infinite;
+        }
+
+        .ticker-track span{
+            margin:0 18px;
+        }
+
+        .ticker-track i{
+            font-style:normal;
+            color:#00ffff;
+        }
+
+        @keyframes ticker-scroll{
+            from{ transform:translateX(0); }
+            to{ transform:translateX(-100%); }
+        }
+
+        /* Pause while the mouse is over it (computers only, so a tap on a phone does not freeze it) */
+        @media (hover:hover){
+            .ticker:hover .ticker-track{
+                animation-play-state:paused;
+            }
+        }
+
+        @media(max-width:900px){
+            .ticker{
+                margin-left:auto;
+                margin-right:auto;
+            }
+
+            .ticker-track{
+                font-size:17px;
+            }
+        }
+
+        /* Visitors whose device is set to "reduce motion" see the words standing still */
+        @media (prefers-reduced-motion: reduce){
+            .ticker-track{
+                animation:none;
+                padding-left:0;
+            }
+        }
+    </style>
 </head>
+
 
 <body>
 
@@ -287,10 +354,10 @@
 
         <!--
             This form sends the message to your email through Formspree.
-            Replace YOUR_FORM_ID below with the ID from your Formspree form.
+            The form ID (xzervnyk) in the action link below comes from your Formspree form.
         -->
         <form id="contact-form" class="contact-form"
-              action="https://formspree.io/f/https://formspree.io/f/xzervnyk" method="POST">
+              action="https://formspree.io/f/xzervnyk" method="POST">
 
             <label for="name">Your name</label>
             <input type="text" id="name" name="name" required>
