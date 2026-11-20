@@ -56,18 +56,22 @@
                 my portfolio
             </h1>
 
-            <!-- Roles slideshow: add or remove a <span class="slide"> to change the list -->
-            <div class="typing-line slider" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
-                <span class="prompt">&gt;</span>
-                <span class="slides" aria-hidden="true">
-                    <span class="slide">Web Developer</span>
-                    <span class="slide">System Developer</span>
-                    <span class="slide">Python Programmer</span>
-                    <span class="slide">AI Enthusiast</span>
-                    <span class="slide">IT Support &amp; Systems Admin</span>
-                </span>
+            <!-- SLIDING WORDS: slide slowly from right to left like a news ticker.
+                 To change the words, edit the <span> items below. -->
+            <div class="ticker" aria-label="Web Developer, System Developer, Python Programmer, AI Enthusiast, IT Support and Systems Admin">
+                <div class="ticker-track" aria-hidden="true">
+                    <span>Web Developer</span><i>&#9670;</i>
+                    <span>System Developer</span><i>&#9670;</i>
+                    <span>Python Programmer</span><i>&#9670;</i>
+                    <span>AI Enthusiast</span><i>&#9670;</i>
+                    <span>IT Support &amp; Systems Admin</span><i>&#9670;</i>
+                    <span>Graphic Design</span><i>&#9670;</i>
+                    <span>Networking</span><i>&#9670;</i>
+                    <span>MySQL</span><i>&#9670;</i>
+                    <span>PHP</span><i>&#9670;</i>
+                    <span>Flask</span>
+                </div>
             </div>
-            <div class="slide-dots" id="slide-dots" aria-hidden="true"></div>
 
             <p>
                 I am a computer scientist with a passion for
@@ -308,7 +312,7 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
-    <!-- BACKGROUND MUSIC: off by default; the round button plays or mutes it.
+    <!-- BACKGROUND MUSIC: plays when the visitor arrives (on their first tap if the browser blocks sound); the round button mutes it.
          If music.mp3 is not uploaded, the button hides itself. -->
     <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
     <button type="button" id="music-btn" class="music-btn hint" aria-label="Play music" title="Play music">
@@ -378,18 +382,20 @@
     <script src="bg.js"></script>
 
     <script>
-        /* Music: stays off until the visitor presses the round speaker button,
-           and the same button switches it off again. */
+        /* Music: plays when the visitor arrives and the round speaker button mutes it.
+           Browsers often block sound until the visitor does something on the page,
+           so if that happens the music starts on their first tap, click or key press. */
         (function () {
             var audio = document.getElementById("bg-music");
             var btn = document.getElementById("music-btn");
             if (!audio || !btn) { return; }
 
             var icon = btn.querySelector("i");
-            var started = false;      // has the music begun
-            var userMuted = false;    // did the visitor switch it off
+            var wantMusic = true;     // music is on unless the visitor mutes it
 
-            try { userMuted = localStorage.getItem("music") === "off"; } catch (e) {}
+            try {
+                if (localStorage.getItem("music") === "off") { wantMusic = false; }
+            } catch (e) {}
 
             audio.volume = 0.25;
 
@@ -398,36 +404,54 @@
             }
 
             function paint() {
-                var playing = started && !audio.paused;
-                icon.className = playing ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
-                btn.setAttribute("aria-label", playing ? "Mute music" : "Play music");
-                btn.title = playing ? "Mute music" : "Play music";
-                btn.classList.toggle("hint", !started && !userMuted);
+                icon.className = wantMusic ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+                btn.setAttribute("aria-label", wantMusic ? "Mute music" : "Turn music on");
+                btn.title = wantMusic ? "Mute music" : "Turn music on";
+                btn.classList.toggle("hint", wantMusic && audio.paused);
             }
 
             function play() {
                 var p = audio.play();
                 if (p && p.then) {
-                    p.then(function () { started = true; paint(); })
-                     .catch(function () {
-                         if (audio.error) { btn.hidden = true; }
-                         paint();
-                     });
+                    p.then(paint).catch(function () {
+                        if (audio.error) { btn.hidden = true; }
+                        paint();
+                    });
                 }
             }
 
+            // If the browser blocked the music, start it on the first tap, click or key press
+            var gestureEvents = ["click", "touchend", "keydown"];
+
+            function onGesture(e) {
+                if (btn.contains(e.target)) { return; }
+                if (wantMusic && audio.paused) { play(); }
+            }
+
+            gestureEvents.forEach(function (type) {
+                document.addEventListener(type, onGesture, true);
+            });
+
+            audio.addEventListener("playing", function () {
+                gestureEvents.forEach(function (type) {
+                    document.removeEventListener(type, onGesture, true);
+                });
+                paint();
+            });
+
+            // The speaker button: mutes the music, or turns it back on
             btn.addEventListener("click", function (e) {
                 e.stopPropagation();
-                if (!audio.paused) {
+                if (wantMusic) {
+                    wantMusic = false;
                     audio.pause();
-                    userMuted = true;
                     save("off");
-                    paint();
                 } else {
-                    userMuted = false;
+                    wantMusic = true;
                     save("on");
                     play();
                 }
+                paint();
             });
 
             // No music file uploaded: hide the button
@@ -435,6 +459,7 @@
             if (audio.error) { btn.hidden = true; }
 
             paint();
+            if (wantMusic) { play(); }   // try to start straight away
         })();
     </script>
 

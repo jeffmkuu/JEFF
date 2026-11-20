@@ -848,3 +848,65 @@ nav a:focus-visible{
         height:36px;
     }
 }
+
+
+/* SLIDING WORDS UNDER THE HEADING */
+
+.ticker{
+    margin-top:24px;
+    max-width:600px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    background:#071111;
+    border:2px solid #00ffff;
+    border-radius:10px;
+    box-shadow:0 0 18px rgba(0, 255, 255, 0.25);
+}
+
+.ticker-track{
+    flex:none;
+    display:inline-block;
+    white-space:nowrap;
+    padding-left:100%;
+    font-size:20px;
+    color:#ffffff;
+    animation:ticker-scroll 45s linear infinite;
+}
+
+.ticker-track span{
+    margin:0 18px;
+}
+
+.ticker-track i{
+    font-style:normal;
+    color:#00ffff;
+}
+
+.ticker:hover .ticker-track{
+    animation-play-state:paused;
+}
+
+@keyframes ticker-scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-100%); }
+}
+
+@media(max-width:900px){
+    .ticker{
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .ticker-track{
+        font-size:17px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .ticker-track{
+        animation:none;
+        padding-left:0;
+    }
+}
