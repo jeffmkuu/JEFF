@@ -76,6 +76,232 @@
                 padding-left:0;
             }
         }
+
+
+        .hire-dialog h3:focus{
+            outline:none;
+        }
+
+        /* ===== RATING WINDOW, RATE BUTTON AND REVIEWS PAGE =====
+           Kept here (not in style.css) so the stars always line up
+           in a row, even if style.css on the site is an older copy. */
+        /* RATE BUTTON (bottom left) */
+
+        .rate-fab{
+            position:fixed;
+            left:20px;
+            bottom:20px;
+            z-index:1200;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:12px 20px;
+            background:#071111;
+            color:#00ffff;
+            border:2px solid #00ffff;
+            border-radius:30px;
+            font-size:16px;
+            font-weight:bold;
+            font-family:inherit;
+            cursor:pointer;
+            box-shadow:0 0 15px rgba(0, 255, 255, 0.35);
+            transition:0.3s;
+        }
+
+        .rate-fab:hover{
+            background:#00ffff;
+            color:#000000;
+        }
+
+        .rate-fab:focus-visible{
+            outline:3px solid #00ffff;
+            outline-offset:3px;
+        }
+
+
+        /* RATING WINDOW */
+
+        .sr-only{
+            position:absolute;
+            width:1px;
+            height:1px;
+            overflow:hidden;
+            clip:rect(0, 0, 0, 0);
+            white-space:nowrap;
+        }
+
+        .star-rating{
+            border:0;
+            padding:0;
+            margin:0 0 18px;
+            position:relative;
+        }
+
+        .star-rating legend{
+            font-size:15px;
+            color:#cccccc;
+            padding:0;
+            margin-bottom:6px;
+        }
+
+        .stars{
+            display:flex;
+            flex-direction:row-reverse;
+            justify-content:flex-end;
+        }
+
+        .stars input{
+            position:absolute;
+            opacity:0;
+            width:1px;
+            height:1px;
+        }
+
+        .hire-form .stars label{
+            display:block;
+            margin:0;
+            padding:0 4px;
+            font-size:38px;
+            line-height:1.2;
+            color:#2b4b4d;
+            cursor:pointer;
+            transition:color 0.2s;
+        }
+
+        .stars input:checked ~ label,
+        .hire-form .stars label:hover,
+        .hire-form .stars label:hover ~ label{
+            color:#00ffff;
+        }
+
+        .stars input:focus-visible + label{
+            outline:3px solid #00ffff;
+            outline-offset:2px;
+            border-radius:6px;
+        }
+
+        .rating-text{
+            margin-top:6px;
+            font-size:15px;
+            color:#cccccc;
+        }
+
+        .hire-form .review-consent{
+            display:flex;
+            align-items:flex-start;
+            gap:10px;
+            margin-bottom:16px;
+            font-size:14px;
+            line-height:1.5;
+            color:#cccccc;
+            cursor:pointer;
+        }
+
+        .review-consent input{
+            width:auto;
+            margin:3px 0 0;
+            accent-color:#00ffff;
+        }
+
+        #review-status{
+            margin-top:14px;
+            font-size:16px;
+            line-height:1.6;
+            min-height:22px;
+        }
+
+        #review-status.ok{
+            color:#00ff99;
+        }
+
+        #review-status.error{
+            color:#ff7a7a;
+        }
+
+
+        /* REVIEWS PAGE */
+
+        .reviews-section{
+            padding:100px 10%;
+        }
+
+        .reviews-section h2{
+            font-size:50px;
+            color:#00ffff;
+            margin-bottom:20px;
+            text-align:center;
+        }
+
+        .reviews-intro{
+            max-width:650px;
+            margin:0 auto 28px;
+            text-align:center;
+            color:#cccccc;
+            font-size:18px;
+            line-height:1.7;
+        }
+
+        .reviews-action{
+            text-align:center;
+            margin-bottom:40px;
+        }
+
+        .reviews-action .contact-btn{
+            margin:0;
+        }
+
+        .reviews-list{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+            gap:25px;
+        }
+
+        .review-card{
+            background:#071111;
+            border:1px solid #00ffff;
+            border-radius:12px;
+            padding:26px;
+        }
+
+        .review-stars{
+            color:#00ffff;
+            font-size:22px;
+            letter-spacing:3px;
+            margin-bottom:12px;
+        }
+
+        .review-card p{
+            color:#dddddd;
+            line-height:1.7;
+        }
+
+        .review-card .review-author{
+            margin-top:14px;
+            font-weight:bold;
+            color:#ffffff;
+        }
+
+        .reviews-empty{
+            text-align:center;
+            color:#cccccc;
+            padding:30px;
+            border:1px dashed #2b4b4d;
+            border-radius:12px;
+        }
+
+        @media(max-width:900px){
+
+            .rate-fab{
+                left:16px;
+                bottom:16px;
+                padding:10px 16px;
+                font-size:15px;
+            }
+
+            .reviews-section h2{
+                font-size:38px;
+            }
+        }
     </style>
 </head>
 
@@ -106,6 +332,7 @@
                     <a href="#projects">Projects</a>
                     <a href="#skills">Skills</a>
                     <a href="#passion">Passion</a>
+                    <a href="#reviews">Reviews</a>
                     <a href="#contact">Contact</a>
                 </div>
             </div>
@@ -199,16 +426,9 @@
             </div>
 
             <div class="service-box">
-                <i class="fa-solid fa-store" aria-hidden="true"></i>
-                <h3>Business Management Systems</h3>
-                <p>Custom systems for shops, salons and restaurants to track sales, stock, expenses, customers and reports.</p>
-                <button type="button" class="service-hire">Hire</button>
-            </div>
-
-            <div class="service-box">
-                <i class="fa-solid fa-school" aria-hidden="true"></i>
-                <h3>School Management Systems</h3>
-                <p>Student registration, marks entry, and online portals where students and parents can see results.</p>
+                <i class="fa-solid fa-gears" aria-hidden="true"></i>
+                <h3>System Building</h3>
+                <p>I build all categories of systems, made according to what the client wants.</p>
                 <button type="button" class="service-hire">Hire</button>
             </div>
 
@@ -222,7 +442,7 @@
             <div class="service-box">
                 <i class="fa-solid fa-robot" aria-hidden="true"></i>
                 <h3>AI Assistants</h3>
-                <p>Smart assistants that answer questions from a business&rsquo;s own data, like my &ldquo;Ask My Business&rdquo; project.</p>
+                <p>AI machines that run things for you and make everyday work easier.</p>
                 <button type="button" class="service-hire">Hire</button>
             </div>
 
@@ -418,6 +638,41 @@
 
     </section>
 
+    <!-- REVIEWS -->
+    <section id="reviews" class="reviews-section page section-page">
+
+        <h2>Reviews</h2>
+
+        <p class="reviews-intro">
+            Worked with me or tried one of my systems? I would love to hear what you think.
+        </p>
+
+        <div class="reviews-action">
+            <button type="button" class="contact-btn" data-open-review>
+                <i class="fa-solid fa-star"></i> Rate &amp; leave a review
+            </button>
+        </div>
+
+        <!-- HOW TO SHOW A REVIEW ON THIS PAGE
+             New reviews arrive in your email. When you approve one, copy the template below,
+             remove the comment marks, paste it inside the "reviews-list" box and fill it in.
+             For the stars, use ★ for each full star and ☆ for each empty one.
+
+             <div class="review-card">
+                 <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+                 <p>&ldquo;Write the review here.&rdquo;</p>
+                 <p class="review-author">Client name</p>
+             </div>
+
+             Delete the "reviews-empty" message once you add your first review. -->
+
+        <div class="reviews-list">
+        </div>
+
+        <p class="reviews-empty">No reviews yet. Be the first to leave one!</p>
+
+    </section>
+
     <!-- CONTACT -->
     <section id="contact" class="contact-section page section-page">
 
@@ -459,7 +714,7 @@
     <dialog id="hire-dialog" class="hire-dialog" aria-labelledby="hire-title">
         <form id="hire-form" class="hire-form" action="https://formspree.io/f/xzervnyk" method="POST">
 
-            <h3 id="hire-title">Confirm hire request</h3>
+            <h3 id="hire-title" tabindex="-1" autofocus>Confirm hire request</h3>
 
             <div class="hire-body">
                 <p class="hire-question">Do you want to hire Geofrey Waithaka for <strong id="hire-service-name"></strong>?</p>
@@ -491,6 +746,59 @@
         </form>
     </dialog>
 
+    <!-- RATE BUTTON: always visible in the bottom-left corner -->
+    <button type="button" class="rate-fab" data-open-review aria-label="Rate me and leave a review">
+        <i class="fa-solid fa-star" aria-hidden="true"></i> <span>Rate me</span>
+    </button>
+
+    <!-- RATING POP-UP WINDOW: stars, name and comment are emailed to you through Formspree -->
+    <dialog id="review-dialog" class="hire-dialog" aria-labelledby="review-title">
+        <form id="review-form" class="hire-form" action="https://formspree.io/f/xzervnyk" method="POST">
+
+            <h3 id="review-title" tabindex="-1" autofocus>Rate &amp; review</h3>
+
+            <div class="hire-body">
+                <p class="hire-help">How was your experience? Choose a star rating and leave a comment.</p>
+
+                <input type="hidden" name="subject" id="review-subject">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+                <fieldset class="star-rating">
+                    <legend>Your rating</legend>
+                    <div class="stars">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars - Excellent"><span aria-hidden="true">&#9733;</span><span class="sr-only">5 stars</span></label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars - Very good"><span aria-hidden="true">&#9733;</span><span class="sr-only">4 stars</span></label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars - Good"><span aria-hidden="true">&#9733;</span><span class="sr-only">3 stars</span></label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars - Fair"><span aria-hidden="true">&#9733;</span><span class="sr-only">2 stars</span></label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star - Poor"><span aria-hidden="true">&#9733;</span><span class="sr-only">1 star</span></label>
+                    </div>
+                    <p class="rating-text" id="review-rating-text">Choose 1 to 5 stars</p>
+                </fieldset>
+
+                <label for="review-name">Your name</label>
+                <input type="text" id="review-name" name="name" required>
+
+                <label for="review-email">Your email (optional, only I can see it)</label>
+                <input type="email" id="review-email" name="email">
+
+                <label for="review-comment">Your comment</label>
+                <textarea id="review-comment" name="message" rows="4" required></textarea>
+
+                <label class="review-consent">
+                    <input type="checkbox" name="may_publish" value="Yes">
+                    <span>You may show my name and comment on this website.</span>
+                </label>
+            </div>
+
+            <div class="hire-actions">
+                <button type="submit" class="contact-btn" id="review-submit">Send my review</button>
+                <button type="button" class="hire-cancel" id="review-cancel">Cancel</button>
+            </div>
+
+            <p id="review-status" role="status" aria-live="polite"></p>
+        </form>
+    </dialog>
+
     <!-- BACKGROUND MUSIC: plays when the visitor arrives (on their first tap if the browser blocks sound); the round button mutes it.
          If music.mp3 is not uploaded, the button hides itself. -->
     <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
@@ -505,7 +813,7 @@
         (function () {
             document.documentElement.classList.add("js");
 
-            var pageNames = ["home", "services", "projects", "skills", "passion", "contact"];
+            var pageNames = ["home", "services", "projects", "skills", "passion", "reviews", "contact"];
             var menuBtn = document.getElementById("menu-btn");
             var menuList = document.getElementById("menu-list");
 
@@ -732,6 +1040,98 @@
                     confirmBtn.disabled = false;
                     statusBox.className = "error";
                     statusBox.textContent = "Your request was not sent. Please email me directly at jeffwaithaka802@gmail.com.";
+                }
+            });
+        })();
+    </script>
+
+    <script>
+        /* Rating window: opens from any "Rate" button, checks the stars, and emails the review to you */
+        (function () {
+            var dialog = document.getElementById("review-dialog");
+            var form = document.getElementById("review-form");
+            if (!dialog || !form) { return; }
+
+            var subjectField = document.getElementById("review-subject");
+            var nameField = document.getElementById("review-name");
+            var ratingText = document.getElementById("review-rating-text");
+            var statusBox = document.getElementById("review-status");
+            var submitBtn = document.getElementById("review-submit");
+            var cancelBtn = document.getElementById("review-cancel");
+
+            var words = { "1": "Poor", "2": "Fair", "3": "Good", "4": "Very good", "5": "Excellent" };
+
+            function openDialog() {
+                form.reset();
+                form.classList.remove("sent");
+                ratingText.textContent = "Choose 1 to 5 stars";
+                statusBox.className = "";
+                statusBox.textContent = "";
+                submitBtn.hidden = false;
+                submitBtn.disabled = false;
+                cancelBtn.textContent = "Cancel";
+
+                if (typeof dialog.showModal === "function") { dialog.showModal(); }
+                else { dialog.setAttribute("open", ""); }
+            }
+
+            function closeDialog() {
+                if (typeof dialog.close === "function") { dialog.close(); }
+                else { dialog.removeAttribute("open"); }
+            }
+
+            document.querySelectorAll("[data-open-review]").forEach(function (btn) {
+                btn.addEventListener("click", openDialog);
+            });
+
+            cancelBtn.addEventListener("click", closeDialog);
+
+            dialog.addEventListener("click", function (e) {
+                if (e.target === dialog) { closeDialog(); }
+            });
+
+            // Show the chosen rating in words
+            form.addEventListener("change", function (e) {
+                if (e.target && e.target.name === "rating") {
+                    ratingText.textContent = e.target.value + " out of 5: " + words[e.target.value];
+                }
+            });
+
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                var chosen = form.querySelector('input[name="rating"]:checked');
+                if (!chosen) {
+                    statusBox.className = "error";
+                    statusBox.textContent = "Please choose a star rating first.";
+                    return;
+                }
+
+                subjectField.value = "New review: " + chosen.value + " out of 5 stars from " + nameField.value.trim();
+                submitBtn.disabled = true;
+                statusBox.className = "";
+                statusBox.textContent = "Sending...";
+
+                try {
+                    var response = await fetch(form.action, {
+                        method: "POST",
+                        body: new FormData(form),
+                        headers: { "Accept": "application/json" }
+                    });
+
+                    if (response.ok) {
+                        form.classList.add("sent");
+                        submitBtn.hidden = true;
+                        cancelBtn.textContent = "Close";
+                        statusBox.className = "ok";
+                        statusBox.textContent = "Thank you for your review! I really appreciate your feedback.";
+                    } else {
+                        throw new Error("Request failed");
+                    }
+                } catch (err) {
+                    submitBtn.disabled = false;
+                    statusBox.className = "error";
+                    statusBox.textContent = "Your review was not sent. Please email me at jeffwaithaka802@gmail.com instead.";
                 }
             });
         })();
