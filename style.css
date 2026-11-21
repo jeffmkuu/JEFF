@@ -862,7 +862,7 @@ nav a:focus-visible{
     margin-bottom:0;
 }
 
-.service-box i{
+.service-box > i{
     display:block;
     font-size:30px;
     color:#00ffff;
@@ -872,4 +872,169 @@ nav a:focus-visible{
 .service-box p{
     color:#cccccc;
     line-height:1.7;
+}
+
+
+/* HIRE BUTTON ON EACH SERVICE */
+
+.services-grid .service-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.service-box p{
+    margin-bottom:22px;
+}
+
+.service-hire{
+    margin-top:auto;
+    align-self:flex-start;
+    padding:10px 30px;
+    background:transparent;
+    color:#00ffff;
+    border:2px solid #00ffff;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    font-family:inherit;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.service-hire:hover{
+    background:#00ffff;
+    color:#000000;
+}
+
+.service-hire:focus-visible,
+.hire-cancel:focus-visible{
+    outline:3px solid #00ffff;
+    outline-offset:2px;
+}
+
+
+/* HIRE CONFIRMATION BOX */
+
+.hire-dialog{
+    margin:auto;
+    width:min(92vw, 480px);
+    max-height:90vh;
+    overflow:auto;
+    padding:28px;
+    background:#071111;
+    color:#ffffff;
+    border:2px solid #00ffff;
+    border-radius:14px;
+    box-shadow:0 0 40px rgba(0, 255, 255, 0.35);
+}
+
+.hire-dialog::backdrop{
+    background:rgba(0, 0, 0, 0.75);
+}
+
+.hire-dialog h3{
+    font-size:24px;
+    color:#00ffff;
+    margin-bottom:14px;
+}
+
+.hire-question{
+    font-size:18px;
+    line-height:1.6;
+    margin-bottom:8px;
+}
+
+.hire-question strong{
+    color:#00ffff;
+}
+
+.hire-help{
+    color:#cccccc;
+    font-size:15px;
+    line-height:1.6;
+    margin-bottom:18px;
+}
+
+.hire-form label{
+    display:block;
+    margin-bottom:6px;
+    font-size:15px;
+    color:#cccccc;
+}
+
+.hire-form input[type="text"],
+.hire-form input[type="email"],
+.hire-form input[type="tel"],
+.hire-form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:16px;
+    background:#021111;
+    color:#ffffff;
+    border:1px solid #00ffff;
+    border-radius:8px;
+    font-size:16px;
+    font-family:inherit;
+}
+
+.hire-form textarea{
+    resize:vertical;
+}
+
+.hire-form input:focus,
+.hire-form textarea:focus{
+    outline:3px solid #00ffff;
+    outline-offset:2px;
+}
+
+.hire-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:6px;
+}
+
+.hire-actions .contact-btn{
+    margin:0;
+}
+
+.hire-actions button[hidden]{
+    display:none;
+}
+
+.hire-cancel{
+    padding:14px 30px;
+    background:transparent;
+    color:#cccccc;
+    border:2px solid #4a6a6a;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    font-family:inherit;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.hire-cancel:hover{
+    border-color:#00ffff;
+    color:#00ffff;
+}
+
+.hire-form.sent .hire-body{
+    display:none;
+}
+
+#hire-status{
+    margin-top:14px;
+    font-size:16px;
+    line-height:1.6;
+    min-height:22px;
+}
+
+#hire-status.ok{
+    color:#00ff99;
+}
+
+#hire-status.error{
+    color:#ff7a7a;
 }

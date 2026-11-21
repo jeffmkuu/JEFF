@@ -195,66 +195,77 @@
                 <i class="fa-solid fa-globe" aria-hidden="true"></i>
                 <h3>Website Development</h3>
                 <p>I create modern, responsive websites for businesses, schools and personal brands.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-store" aria-hidden="true"></i>
                 <h3>Business Management Systems</h3>
                 <p>Custom systems for shops, salons and restaurants to track sales, stock, expenses, customers and reports.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-school" aria-hidden="true"></i>
                 <h3>School Management Systems</h3>
                 <p>Student registration, marks entry, and online portals where students and parents can see results.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-code" aria-hidden="true"></i>
                 <h3>Python Programming</h3>
                 <p>I develop Python projects, automation tools and AI applications.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-robot" aria-hidden="true"></i>
                 <h3>AI Assistants</h3>
                 <p>Smart assistants that answer questions from a business&rsquo;s own data, like my &ldquo;Ask My Business&rdquo; project.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-database" aria-hidden="true"></i>
                 <h3>Database Design &amp; Management</h3>
                 <p>I design and manage MySQL databases that keep your records organised and easy to search.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
                 <h3>Networking</h3>
                 <p>Setting up and troubleshooting small office and home networks.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-server" aria-hidden="true"></i>
                 <h3>Systems Administration</h3>
                 <p>Managing computers, user accounts and software so an office or school runs smoothly.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                 <h3>IT Support &amp; Troubleshooting</h3>
                 <p>Fixing software and computer problems, and installing and setting up programs on Windows.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-palette" aria-hidden="true"></i>
                 <h3>Graphic Design</h3>
                 <p>I create posters, logos and business graphics.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
             <div class="service-box">
                 <i class="fa-solid fa-film" aria-hidden="true"></i>
                 <h3>Video Editing &amp; Videography</h3>
                 <p>Filming and editing videos and promotional clips.</p>
+                <button type="button" class="service-hire">Hire</button>
             </div>
 
         </div>
@@ -436,6 +447,43 @@
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
     </footer>
 
+    <!-- HIRE CONFIRMATION: opens when a visitor presses "Hire" on a service.
+         When confirmed, the request is emailed to you through Formspree. -->
+    <dialog id="hire-dialog" class="hire-dialog" aria-labelledby="hire-title">
+        <form id="hire-form" class="hire-form" action="https://formspree.io/f/xzervnyk" method="POST">
+
+            <h3 id="hire-title">Confirm hire request</h3>
+
+            <div class="hire-body">
+                <p class="hire-question">Do you want to hire Geofrey Waithaka for <strong id="hire-service-name"></strong>?</p>
+                <p class="hire-help">Please confirm and leave your details so I can contact you.</p>
+
+                <input type="hidden" name="service" id="hire-service">
+                <input type="hidden" name="subject" id="hire-subject">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+                <label for="hire-name">Your name</label>
+                <input type="text" id="hire-name" name="name" required>
+
+                <label for="hire-email">Your email</label>
+                <input type="email" id="hire-email" name="email" required>
+
+                <label for="hire-phone">Phone or WhatsApp (optional)</label>
+                <input type="tel" id="hire-phone" name="phone">
+
+                <label for="hire-note">Short note about what you need (optional)</label>
+                <textarea id="hire-note" name="message" rows="3"></textarea>
+            </div>
+
+            <div class="hire-actions">
+                <button type="submit" class="contact-btn" id="hire-confirm">Yes, send my hire request</button>
+                <button type="button" class="hire-cancel" id="hire-cancel">Cancel</button>
+            </div>
+
+            <p id="hire-status" role="status" aria-live="polite"></p>
+        </form>
+    </dialog>
+
     <!-- BACKGROUND MUSIC: plays when the visitor arrives (on their first tap if the browser blocks sound); the round button mutes it.
          If music.mp3 is not uploaded, the button hides itself. -->
     <audio id="bg-music" src="music.mp3" loop preload="metadata"></audio>
@@ -584,6 +632,89 @@
 
             paint();
             if (wantMusic) { play(); }   // try to start straight away
+        })();
+    </script>
+
+    <script>
+        /* Hire buttons: each opens a confirmation box, and confirming emails you the service name */
+        (function () {
+            var dialog = document.getElementById("hire-dialog");
+            var form = document.getElementById("hire-form");
+            if (!dialog || !form) { return; }
+
+            var serviceName = document.getElementById("hire-service-name");
+            var serviceField = document.getElementById("hire-service");
+            var subjectField = document.getElementById("hire-subject");
+            var statusBox = document.getElementById("hire-status");
+            var confirmBtn = document.getElementById("hire-confirm");
+            var cancelBtn = document.getElementById("hire-cancel");
+
+            function openDialog() {
+                if (typeof dialog.showModal === "function") { dialog.showModal(); }
+                else { dialog.setAttribute("open", ""); }
+            }
+
+            function closeDialog() {
+                if (typeof dialog.close === "function") { dialog.close(); }
+                else { dialog.removeAttribute("open"); }
+            }
+
+            document.querySelectorAll(".service-hire").forEach(function (btn) {
+                var card = btn.closest(".service-box");
+                var heading = card ? card.querySelector("h3") : null;
+                var title = heading ? heading.textContent.trim() : "this service";
+                btn.setAttribute("aria-label", "Hire me for " + title);
+
+                btn.addEventListener("click", function () {
+                    form.reset();
+                    form.classList.remove("sent");
+                    serviceField.value = title;
+                    subjectField.value = "Hire request: " + title;
+                    serviceName.textContent = title;
+                    statusBox.className = "";
+                    statusBox.textContent = "";
+                    confirmBtn.hidden = false;
+                    confirmBtn.disabled = false;
+                    cancelBtn.textContent = "Cancel";
+                    openDialog();
+                });
+            });
+
+            cancelBtn.addEventListener("click", closeDialog);
+
+            // Clicking the dark area outside the box closes it
+            dialog.addEventListener("click", function (e) {
+                if (e.target === dialog) { closeDialog(); }
+            });
+
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                confirmBtn.disabled = true;
+                statusBox.className = "";
+                statusBox.textContent = "Sending...";
+
+                try {
+                    var response = await fetch(form.action, {
+                        method: "POST",
+                        body: new FormData(form),
+                        headers: { "Accept": "application/json" }
+                    });
+
+                    if (response.ok) {
+                        form.classList.add("sent");
+                        confirmBtn.hidden = true;
+                        cancelBtn.textContent = "Close";
+                        statusBox.className = "ok";
+                        statusBox.textContent = "Thank you! Your request to hire me for " + serviceField.value + " was sent. I will contact you soon.";
+                    } else {
+                        throw new Error("Request failed");
+                    }
+                } catch (err) {
+                    confirmBtn.disabled = false;
+                    statusBox.className = "error";
+                    statusBox.textContent = "Your request was not sent. Please email me directly at jeffwaithaka802@gmail.com.";
+                }
+            });
         })();
     </script>
 
