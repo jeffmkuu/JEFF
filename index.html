@@ -281,6 +281,26 @@
             color:#ffffff;
         }
 
+        .reviews-summary{
+            text-align:center;
+            font-size:20px;
+            color:#00ffff;
+            margin-bottom:28px;
+        }
+
+        .review-date{
+            margin-top:4px;
+            font-size:14px;
+            color:#8fb3b3;
+        }
+
+        .hire-form .review-notice{
+            font-size:14px;
+            line-height:1.5;
+            color:#cccccc;
+            margin-bottom:16px;
+        }
+
         .reviews-empty{
             text-align:center;
             color:#cccccc;
@@ -523,6 +543,7 @@
                     admin and staff roles.
                 </p>
                 <span class="tags"><b>PHP</b><b>MySQL</b><b>JavaScript</b><b>Bootstrap</b></span>
+                <a class="hire-btn" href="demo-business.html" target="_blank" rel="noopener" style="margin-top:16px" title="Try it with sample data">Live demo</a>
             </div>
         </div>
 
@@ -538,6 +559,7 @@
                     subject, and students and parents log in to their own portals to see results.
                 </p>
                 <span class="tags"><b>PHP</b><b>MySQL</b></span>
+                <a class="hire-btn" href="demo-school.html" target="_blank" rel="noopener" style="margin-top:16px" title="Try it with sample data">Live demo</a>
             </div>
         </div>
 
@@ -653,23 +675,13 @@
             </button>
         </div>
 
-        <!-- HOW TO SHOW A REVIEW ON THIS PAGE
-             New reviews arrive in your email. When you approve one, copy the template below,
-             remove the comment marks, paste it inside the "reviews-list" box and fill it in.
-             For the stars, use ★ for each full star and ☆ for each empty one.
+        <!-- Reviews appear here automatically from your Google Sheet (see the setup steps).
+             To remove one, delete its row in the sheet. -->
+        <p class="reviews-summary" id="reviews-summary" hidden></p>
 
-             <div class="review-card">
-                 <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
-                 <p>&ldquo;Write the review here.&rdquo;</p>
-                 <p class="review-author">Client name</p>
-             </div>
+        <div class="reviews-list" id="reviews-list"></div>
 
-             Delete the "reviews-empty" message once you add your first review. -->
-
-        <div class="reviews-list">
-        </div>
-
-        <p class="reviews-empty">No reviews yet. Be the first to leave one!</p>
+        <p class="reviews-empty" id="reviews-empty">No reviews yet. Be the first to leave one!</p>
 
     </section>
 
@@ -772,7 +784,7 @@
                         <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars - Fair"><span aria-hidden="true">&#9733;</span><span class="sr-only">2 stars</span></label>
                         <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star - Poor"><span aria-hidden="true">&#9733;</span><span class="sr-only">1 star</span></label>
                     </div>
-                    <p class="rating-text" id="review-rating-text">rate us</p>
+                    <p class="rating-text" id="review-rating-text">Choose 1 to 5 stars</p>
                 </fieldset>
 
                 <label for="review-name">Your name</label>
@@ -784,10 +796,7 @@
                 <label for="review-comment">Your comment</label>
                 <textarea id="review-comment" name="message" rows="4" required></textarea>
 
-                <label class="review-consent">
-                    <input type="checkbox" name="may_publish" value="Yes">
-                    <span>You may show my name and comment on this website.</span>
-                </label>
+                <p class="review-notice">Your name, rating and comment will be shown on the Reviews page. Your email stays private.</p>
             </div>
 
             <div class="hire-actions">
@@ -1046,20 +1055,123 @@
     </script>
 
     <script>
-        /* Rating window: opens from any "Rate" button, checks the stars, and emails the review to you */
+        /* Rating window and Reviews page.
+           Reviews are saved in your Google Sheet and shown on the Reviews page automatically. */
         (function () {
+            /* LAST STEP OF THE REVIEW SETUP: paste your Google web app link between the quotes.
+               Example: "https://script.google.com/macros/s/AKfy.../exec"
+               While it is empty, reviews are only emailed to you through Formspree. */
+            var REVIEWS_URL = "";
+
             var dialog = document.getElementById("review-dialog");
             var form = document.getElementById("review-form");
             if (!dialog || !form) { return; }
 
             var subjectField = document.getElementById("review-subject");
             var nameField = document.getElementById("review-name");
+            var emailField = document.getElementById("review-email");
+            var commentField = document.getElementById("review-comment");
             var ratingText = document.getElementById("review-rating-text");
             var statusBox = document.getElementById("review-status");
             var submitBtn = document.getElementById("review-submit");
             var cancelBtn = document.getElementById("review-cancel");
 
+            var list = document.getElementById("reviews-list");
+            var emptyMsg = document.getElementById("reviews-empty");
+            var summary = document.getElementById("reviews-summary");
+            var emptyText = emptyMsg ? emptyMsg.textContent : "";
+
             var words = { "1": "Poor", "2": "Fair", "3": "Good", "4": "Very good", "5": "Excellent" };
+            var shown = [];
+
+            /* ---------- Reviews page ---------- */
+
+            function starText(n) {
+                return new Array(n + 1).join("\u2605") + new Array(6 - n).join("\u2606");
+            }
+
+            function formatDate(value) {
+                var d = new Date(value);
+                if (isNaN(d.getTime())) { return ""; }
+                return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+            }
+
+            // Reviews are written into the page as plain text, never as code
+            function makeCard(review) {
+                var card = document.createElement("div");
+                card.className = "review-card";
+
+                var stars = document.createElement("div");
+                stars.className = "review-stars";
+                stars.textContent = starText(review.rating);
+                stars.setAttribute("aria-label", review.rating + " out of 5 stars");
+
+                var text = document.createElement("p");
+                text.textContent = "\u201C" + review.comment + "\u201D";
+
+                var author = document.createElement("p");
+                author.className = "review-author";
+                author.textContent = review.name;
+
+                card.appendChild(stars);
+                card.appendChild(text);
+                card.appendChild(author);
+
+                var when = formatDate(review.date);
+                if (when) {
+                    var dateLine = document.createElement("p");
+                    dateLine.className = "review-date";
+                    dateLine.textContent = when;
+                    card.appendChild(dateLine);
+                }
+                return card;
+            }
+
+            function showReviews(reviews) {
+                if (!list) { return; }
+                list.textContent = "";
+                var total = 0;
+
+                reviews.forEach(function (review) {
+                    total += review.rating;
+                    list.appendChild(makeCard(review));
+                });
+
+                if (emptyMsg) {
+                    emptyMsg.textContent = emptyText;
+                    emptyMsg.hidden = reviews.length > 0;
+                }
+                if (summary) {
+                    summary.hidden = reviews.length === 0;
+                    if (reviews.length) {
+                        summary.textContent = (total / reviews.length).toFixed(1) + " out of 5 from " +
+                            reviews.length + (reviews.length === 1 ? " review" : " reviews");
+                    }
+                }
+            }
+
+            function loadReviews() {
+                if (!REVIEWS_URL || !list) { return; }
+                if (emptyMsg) { emptyMsg.textContent = "Loading reviews..."; }
+
+                fetch(REVIEWS_URL)
+                    .then(function (response) { return response.json(); })
+                    .then(function (data) {
+                        shown = (data.reviews || []).map(function (r) {
+                            var rating = Math.min(5, Math.max(1, Math.round(Number(r.rating)) || 1));
+                            return { name: String(r.name), comment: String(r.comment), rating: rating, date: r.date };
+                        });
+                        showReviews(shown);
+                    })
+                    .catch(function () {
+                        if (emptyMsg) {
+                            emptyMsg.hidden = false;
+                            emptyMsg.textContent = "Reviews could not be loaded right now.";
+                        }
+                    });
+            }
+
+            /* ---------- Rating window ---------- */
 
             function openDialog() {
                 form.reset();
@@ -1107,33 +1219,74 @@
                     return;
                 }
 
-                subjectField.value = "New review: " + chosen.value + " out of 5 stars from " + nameField.value.trim();
+                // One review a minute from the same browser
+                var lastSent = 0;
+                try { lastSent = Number(localStorage.getItem("reviewSentAt")) || 0; } catch (err) {}
+                if (Date.now() - lastSent < 60000) {
+                    statusBox.className = "error";
+                    statusBox.textContent = "Please wait a minute before sending another review.";
+                    return;
+                }
+
+                var rating = Number(chosen.value);
+                var name = nameField.value.trim();
+                var email = emailField.value.trim();
+                var comment = commentField.value.trim();
+                var trap = form.querySelector('input[name="_gotcha"]');
+
                 submitBtn.disabled = true;
                 statusBox.className = "";
                 statusBox.textContent = "Sending...";
 
                 try {
-                    var response = await fetch(form.action, {
-                        method: "POST",
-                        body: new FormData(form),
-                        headers: { "Accept": "application/json" }
-                    });
+                    var sent;
 
-                    if (response.ok) {
-                        form.classList.add("sent");
-                        submitBtn.hidden = true;
-                        cancelBtn.textContent = "Close";
-                        statusBox.className = "ok";
-                        statusBox.textContent = "Thank you for your review! I really appreciate your feedback.";
+                    if (REVIEWS_URL) {
+                        // Goes to your Google Sheet, which also emails you
+                        var response = await fetch(REVIEWS_URL, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                name: name, email: email, rating: rating,
+                                comment: comment, website: trap ? trap.value : ""
+                            })
+                        });
+                        var result = await response.json();
+                        sent = result && result.ok === true;
                     } else {
-                        throw new Error("Request failed");
+                        // Not set up yet: emailed to you through Formspree
+                        subjectField.value = "New review: " + rating + " out of 5 stars from " + name;
+                        var plain = await fetch(form.action, {
+                            method: "POST",
+                            body: new FormData(form),
+                            headers: { "Accept": "application/json" }
+                        });
+                        sent = plain.ok;
                     }
+
+                    if (!sent) { throw new Error("Request failed"); }
+
+                    try { localStorage.setItem("reviewSentAt", String(Date.now())); } catch (err) {}
+
+                    if (REVIEWS_URL) {
+                        shown.unshift({ name: name, comment: comment, rating: rating, date: new Date().toISOString() });
+                        showReviews(shown);
+                    }
+
+                    form.classList.add("sent");
+                    submitBtn.hidden = true;
+                    cancelBtn.textContent = "Close";
+                    statusBox.className = "ok";
+                    statusBox.textContent = REVIEWS_URL
+                        ? "Thank you! Your review is now on the Reviews page."
+                        : "Thank you for your review! I really appreciate your feedback.";
                 } catch (err) {
                     submitBtn.disabled = false;
                     statusBox.className = "error";
                     statusBox.textContent = "Your review was not sent. Please email me at jeffwaithaka802@gmail.com instead.";
                 }
             });
+
+            loadReviews();
         })();
     </script>
 

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business system demo</title><link rel="stylesheet" href="demo.css"></head>
+<body>
+<div class="banner">Interactive demo with sample data. Nothing you enter is saved.</div>
+<div class="top"><b>AI Business Assistant &amp; Management System</b><span id="who" class="muted"></span><a class="btn" href="index.html#projects">Back to portfolio</a></div>
+<div class="wrap">
+<div id="login" class="box login"><h1>Demo login</h1>
+<p class="muted" style="margin-bottom:14px">Business: Demo Wholesalers (sample). Choose a role and look around. Each role sees different things.</p>
+<select id="role" aria-label="Role"><option value="admin">Admin (business owner)</option><option value="main">Staff Main (supervisor)</option><option value="staff">Staff (sales only)</option></select><br>
+<button class="solid" onclick="enter()">Enter demo</button></div>
+<div id="app" class="hide"><div class="tabs" id="tabs"></div><div id="view"></div></div></div>
+<div id="toast" class="toast hide" role="status"></div>
+<script>
+var P=[{n:"Maize flour 2kg",p:150,c:120,s:40,b:"1001"},{n:"Cooking oil 1L",p:320,c:270,s:12,b:"1002"},{n:"Sugar 1kg",p:170,c:140,s:6,b:"1003"},{n:"Rice 1kg",p:200,c:165,s:25,b:"1004"},{n:"Soap bar",p:60,c:40,s:60,b:"1005"},{n:"Bread",p:65,c:50,s:4,b:"1006"}];
+var D=[{n:"Mama Njeri",o:1800},{n:"Mr. Otieno",o:950}],S=[{tot:1450,prof:260},{tot:640,prof:110}],E=[{n:"Transport",a:500},{n:"Electricity tokens",a:700}];
+var role="admin",cart=[],tab="";
+var T={admin:["Dashboard","Sales","Products","Expenses","Debts","Ask AI"],main:["Dashboard","Sales","Products","Expenses","Debts","Ask AI"],staff:["Sales","Products","Ask AI"]};
+function $(i){return document.getElementById(i)}
+function money(n){return "KSh "+n.toLocaleString()}
+function sum(a,k){return a.reduce(function(s,x){return s+x[k]},0)}
+function low(){return P.filter(function(x){return x.s<=10})}
+function toast(m){var t=$("toast");t.textContent=m;t.classList.remove("hide");setTimeout(function(){t.classList.add("hide")},2500)}
+function enter(){role=$("role").value;$("login").classList.add("hide");$("app").classList.remove("hide");$("who").textContent="Logged in as: "+$("role").selectedOptions[0].text;show(T[role][0])}
+function show(t){tab=t;$("tabs").innerHTML=T[role].map(function(x){return '<button class="'+(x==t?"on":"")+'" onclick="show(\''+x+'\')">'+x+'</button>'}).join("");$("view").innerHTML=V[t]();if(t=="Sales")cartUI();if(t=="Ask AI")say("Hello! Ask me about sales, profit, stock, debts or expenses.")}
+var V={
+Dashboard:function(){var pr=sum(S,"prof")-sum(E,"a");return '<div class="grid"><div class="stat">Sales today<b>'+money(sum(S,"tot"))+'</b></div>'+(role=="admin"?'<div class="stat">Profit today<b>'+money(pr)+'</b></div>':'')+'<div class="stat">Low stock items<b>'+low().length+'</b></div><div class="stat">Owed by customers<b>'+money(sum(D,"o"))+'</b></div></div><div class="box"><h3>Running low</h3>'+(low().map(function(x){return '<p class="low">'+x.n+': only '+x.s+' left</p>'}).join("")||'<p class="muted">Everything is well stocked.</p>')+'</div>'+(role=="main"?'<p class="muted">Profit is hidden for Staff Main. Only the owner sees it.</p>':'')},
+Sales:function(){return '<div class="box"><h3>Sales register</h3><input id="bc" placeholder="Scan or type a barcode (try 1001)"><button onclick="scan()">Add item</button><div class="scroll"><table><tr><th>Product</th><th>Price</th><th>In stock</th><th></th></tr>'+P.map(function(x,i){return '<tr><td>'+x.n+'</td><td>'+money(x.p)+'</td><td>'+x.s+'</td><td><button onclick="add('+i+')">Add</button></td></tr>'}).join("")+'</table></div></div><div class="box"><h3>Current sale</h3><div id="cart"></div></div>'},
+Products:function(){var st=role=="staff";return '<div class="box scroll"><table><tr><th>Product</th><th>Price</th>'+(st?"":"<th>Cost</th>")+'<th>In stock</th></tr>'+P.map(function(x){return '<tr><td>'+x.n+'</td><td>'+money(x.p)+'</td>'+(st?"":'<td>'+money(x.c)+'</td>')+'<td class="'+(x.s<=10?"low":"")+'">'+x.s+'</td></tr>'}).join("")+'</table></div>'+(role=="admin"?'<div class="box"><h3>Add a product</h3><input id="pn" placeholder="Name"><input id="pp" type="number" placeholder="Price"><input id="pc" type="number" placeholder="Cost"><input id="ps" type="number" placeholder="Stock"><button class="solid" onclick="addP()">Save product</button></div>':'<p class="muted">Staff can view products but cannot add or edit them.</p>')},
+Expenses:function(){return '<div class="box"><table><tr><th>Expense</th><th>Amount</th></tr>'+E.map(function(x){return '<tr><td>'+x.n+'</td><td>'+money(x.a)+'</td></tr>'}).join("")+'</table></div><div class="box"><h3>Record an expense</h3><input id="en" placeholder="What for?"><input id="ea" type="number" placeholder="Amount"><button class="solid" onclick="addE()">Save expense</button></div>'},
+Debts:function(){return '<div class="box"><table><tr><th>Customer</th><th>Owes</th><th></th></tr>'+D.map(function(x,i){return '<tr><td>'+x.n+'</td><td>'+money(x.o)+'</td><td><button onclick="remind('+i+')">Send reminder</button><button onclick="paid('+i+')">Mark paid</button></td></tr>'}).join("")+'</table>'+(D.length?"":'<p class="muted">No one owes you money.</p>')+'</div>'},
+"Ask AI":function(){return '<div class="box"><h3>Ask My Business</h3><div class="chat" id="chat"></div><input id="q" placeholder="Type a question" onkeydown="if(event.key==\'Enter\')send()"><button class="solid" onclick="send()">Ask</button><div><button onclick="send(\'How much did I sell today?\')">Sales today</button><button onclick="send(\'What is my profit?\')">Profit</button><button onclick="send(\'What is running low?\')">Low stock</button><button onclick="send(\'Who owes me money?\')">Debts</button></div></div>'}};
+function add(i){if(P[i].s<1){toast("Out of stock");return}var f=cart.filter(function(c){return c.i==i})[0];if(f){if(f.q<P[i].s)f.q++}else cart.push({i:i,q:1});cartUI()}
+function scan(){var b=$("bc").value.trim(),i=P.findIndex(function(x){return x.b==b});if(i<0){toast("No product has that barcode");return}add(i);$("bc").value=""}
+function tot(){return cart.reduce(function(s,c){return s+c.q*P[c.i].p},0)}
+function cartUI(){var e=$("cart");if(!e)return;e.innerHTML=cart.length?'<table>'+cart.map(function(c){return '<tr><td>'+P[c.i].n+' x '+c.q+'</td><td>'+money(c.q*P[c.i].p)+'</td></tr>'}).join("")+'</table><h3 style="margin:12px 0">Total: '+money(tot())+'</h3><button class="solid" onclick="pay(\'cash\')">Pay with cash</button><button onclick="pay(\'M-Pesa\')">Pay with M-Pesa</button>':'<p class="muted">No items yet. Scan a barcode or press Add.</p>'}
+function pay(m){var t=tot();if(m=="M-Pesa"){toast("M-Pesa prompt sent to the customer's phone (demo)...");setTimeout(function(){done(t,m)},1800)}else done(t,m)}
+function done(t,m){var pr=0;cart.forEach(function(c){var p=P[c.i];p.s-=c.q;pr+=c.q*(p.p-p.c)});S.push({tot:t,prof:pr});cart=[];toast("Sale of "+money(t)+" paid by "+m);if(tab=="Sales")show("Sales")}
+function addP(){var n=$("pn").value.trim(),p=+$("pp").value,c=+$("pc").value,s=+$("ps").value;if(!n||!p){toast("Enter a name and price");return}P.push({n:n,p:p,c:c,s:s,b:String(1007+P.length)});toast("Product saved");show("Products")}
+function addE(){var n=$("en").value.trim(),a=+$("ea").value;if(!n||!a){toast("Enter what it was for and the amount");return}E.push({n:n,a:a});toast("Expense saved");show("Expenses")}
+function remind(i){toast("WhatsApp reminder sent to "+D[i].n+" (demo)")}
+function paid(i){toast(D[i].n+" has paid");D.splice(i,1);show("Debts")}
+function say(t,me){var c=$("chat");if(!c)return;var d=document.createElement("div");d.className="msg"+(me?" me":"");d.textContent=t;c.appendChild(d);c.scrollTop=c.scrollHeight}
+function send(q){q=q||$("q").value.trim();if(!q)return;if($("q"))$("q").value="";say(q,1);say(answer(q))}
+function answer(q){q=q.toLowerCase();
+if(/profit/.test(q))return role=="admin"?"Today's profit is "+money(sum(S,"prof")-sum(E,"a"))+" (profit on sales minus expenses).":"Only the business owner can see profit.";
+if(/sale|sold|sell|revenue/.test(q))return "You have made "+money(sum(S,"tot"))+" from "+S.length+" sales today.";
+if(/low|stock|running|restock/.test(q)){var l=low();return l.length?"Running low: "+l.map(function(x){return x.n+" ("+x.s+" left)"}).join(", ")+".":"Nothing is running low."}
+if(/owe|debt|credit/.test(q))return role=="staff"?"Only Staff Main and the owner can see debts.":(D.length?D.map(function(d){return d.n+" owes "+money(d.o)}).join("; ")+". Total "+money(sum(D,"o"))+".":"No one owes you money.");
+if(/expense|spent/.test(q))return role=="staff"?"Only Staff Main and the owner can see expenses.":"Expenses today are "+money(sum(E,"a"))+".";
+return "I can answer questions about sales, profit, low stock, debts and expenses."}
+</script></body></html>

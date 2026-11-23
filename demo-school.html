@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School system demo</title><link rel="stylesheet" href="demo.css"></head>
+<body>
+<div class="banner">Interactive demo with sample data. Nothing you enter is saved.</div>
+<div class="top"><b>School Management System</b><span id="who" class="muted"></span><a class="btn" href="index.html#projects">Back to portfolio</a></div>
+<div class="wrap">
+<div id="login" class="box login"><h1>Demo login</h1>
+<p class="muted" style="margin-bottom:14px">Demo Primary School (sample). Choose who you want to be.</p>
+<select id="role" aria-label="Role" onchange="who()"><option value="sec">Secretary</option><option value="tea">Teacher</option><option value="stu">Student</option><option value="par">Parent</option></select>
+<select id="pick" class="hide" aria-label="Account"></select><br>
+<button class="solid" onclick="enter()">Enter demo</button></div>
+<div id="app" class="hide"><div id="view"></div></div></div>
+<div id="toast" class="toast hide" role="status"></div>
+<script>
+var SUB=["Maths","English","Kiswahili","Science"];
+var ST=[{n:"Amina Wanjiru",c:"Class 6",p:"Mrs. Wanjiru",m:[78,82,70,75]},{n:"Brian Otieno",c:"Class 6",p:"Mr. Otieno",m:[64,58,72,66]},{n:"Cynthia Achieng",c:"Class 6",p:"Mrs. Achieng",m:[90,85,88,92]},{n:"David Kamau",c:"Class 6",p:"Mr. Kamau",m:[45,52,60,48]}];
+var role="sec",me="",sub=0;
+function $(i){return document.getElementById(i)}
+function toast(m){var t=$("toast");t.textContent=m;t.classList.remove("hide");setTimeout(function(){t.classList.add("hide")},2500)}
+function who(){var r=$("role").value,p=$("pick");p.classList.toggle("hide",r=="sec"||r=="tea");p.innerHTML=r=="stu"?ST.map(function(s){return "<option>"+s.n+"</option>"}).join(""):r=="par"?ST.map(function(s){return "<option>"+s.p+"</option>"}).join(""):""}
+function enter(){role=$("role").value;me=$("pick").value;$("login").classList.add("hide");$("app").classList.remove("hide");$("who").textContent="Logged in as: "+$("role").selectedOptions[0].text+(me?" ("+me+")":"");draw()}
+function grade(m){return m>=80?"A":m>=70?"B":m>=60?"C":m>=50?"D":"E"}
+function done(s){return s.m.every(function(x){return x!==""})}
+function total(s){return s.m.reduce(function(a,x){return a+(+x)},0)}
+function rank(s){var r=1;ST.forEach(function(o){if(done(o)&&total(o)>total(s))r++});return r}
+function results(s){if(!done(s))return '<p class="muted">Some marks are still waiting for the teacher.</p>';var t=total(s),mean=t/SUB.length;return '<div class="box scroll"><h3>'+s.n+" ("+s.c+')</h3><table><tr><th>Subject</th><th>Marks</th><th>Grade</th></tr>'+SUB.map(function(x,i){return '<tr><td>'+x+'</td><td>'+s.m[i]+'</td><td>'+grade(s.m[i])+'</td></tr>'}).join("")+'</table></div><div class="grid"><div class="stat">Total<b>'+t+'</b></div><div class="stat">Mean<b>'+mean.toFixed(1)+' ('+grade(mean)+')</b></div><div class="stat">Position in class<b>'+rank(s)+' of '+ST.filter(done).length+'</b></div></div>'}
+function draw(){var h="";
+if(role=="sec")h='<h2>Secretary: register a student</h2><div class="box"><input id="nn" placeholder="Student full name"><select id="nc"><option>Class 6</option><option>Class 7</option></select><input id="np" placeholder="Parent name"><button class="solid" onclick="reg()">Register student</button></div><div class="box scroll"><h3>Registered students ('+ST.length+')</h3><table><tr><th>Name</th><th>Class</th><th>Parent</th></tr>'+ST.map(function(s){return '<tr><td>'+s.n+'</td><td>'+s.c+'</td><td>'+s.p+'</td></tr>'}).join("")+'</table></div>';
+if(role=="tea")h='<h2>Teacher: enter marks</h2><div class="box"><select id="sb" onchange="sub=this.selectedIndex;draw()">'+SUB.map(function(x,i){return '<option'+(i==sub?" selected":"")+'>'+x+'</option>'}).join("")+'</select><div class="scroll"><table><tr><th>Student</th><th>'+SUB[sub]+' marks (0 to 100)</th></tr>'+ST.map(function(s,i){return '<tr><td>'+s.n+'</td><td><input type="number" min="0" max="100" id="m'+i+'" value="'+s.m[sub]+'"></td></tr>'}).join("")+'</table></div><button class="solid" onclick="save()">Save marks</button></div><p class="muted">Switch to Student or Parent to see the new marks appear.</p>';
+if(role=="stu")h='<h2>Student portal</h2>'+results(ST.filter(function(s){return s.n==me})[0]);
+if(role=="par")h='<h2>Parent portal</h2><p class="muted" style="margin-bottom:12px">Your children at Demo Primary School:</p>'+ST.filter(function(s){return s.p==me}).map(results).join("");
+h+='<button onclick="location.reload()">Switch account</button>';$("view").innerHTML=h}
+function reg(){var n=$("nn").value.trim(),p=$("np").value.trim();if(!n||!p){toast("Enter the student's name and the parent's name");return}ST.push({n:n,c:$("nc").value,p:p,m:["","","",""]});toast(n+" registered");draw()}
+function save(){var bad=0;ST.forEach(function(s,i){var v=$("m"+i).value;if(v===""||v<0||v>100)bad=1});if(bad){toast("Enter a mark from 0 to 100 for every student");return}ST.forEach(function(s,i){s.m[sub]=+$("m"+i).value});toast(SUB[sub]+" marks saved");draw()}
+who();
+</script></body></html>
