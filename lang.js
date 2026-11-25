@@ -82,7 +82,8 @@
     "Your email (optional, only I can see it)":["Barua pepe yako (si lazima, mimi tu ninaiona)","Tu correo (opcional, solo yo lo veo)","Votre e-mail (facultatif, moi seul le vois)","بريدك الإلكتروني (اختياري، أراه أنا فقط)"],
     "Your comment":["Maoni yako","Tu comentario","Votre commentaire","تعليقك"],
     "Your name, rating and comment will be shown on the Reviews page. Your email stays private.":["Jina lako, ukadiriaji na maoni vitaonyeshwa kwenye ukurasa wa Maoni. Barua pepe yako hubaki siri.","Tu nombre, valoración y comentario se mostrarán en la página de reseñas. Tu correo permanece privado.","Votre nom, votre note et votre commentaire seront affichés sur la page des avis. Votre e-mail reste privé.","سيظهر اسمك وتقييمك وتعليقك في صفحة التقييمات. يبقى بريدك الإلكتروني خاصًا."],
-    "Send my review":["Tuma maoni yangu","Enviar mi reseña","Envoyer mon avis","أرسل تقييمي"]
+    "Send my review":["Tuma maoni yangu","Enviar mi reseña","Envoyer mon avis","أرسل تقييمي"],
+    "Powered by J-Tech Software":["Imeendeshwa na J-Tech Software","Desarrollado por J-Tech Software","Propulsé par J-Tech Software","بدعم من J-Tech Software"]
     };
 
     var lang = "en-GB", orig = new WeakMap(), mine = new WeakMap();

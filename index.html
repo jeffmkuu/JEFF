@@ -111,6 +111,32 @@
             direction:ltr;
         }
 
+        .powered{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            margin-top:12px;
+            color:#cccccc;
+            font-size:14px;
+            text-decoration:none;
+            transition:color 0.3s;
+        }
+
+        .powered img{
+            width:26px;
+            height:26px;
+            border-radius:6px;
+        }
+
+        .powered:hover{
+            color:#00ffff;
+        }
+
+        .powered:focus-visible{
+            outline:3px solid #00ffff;
+            outline-offset:3px;
+        }
+
         .hire-dialog h3:focus{
             outline:none;
         }
@@ -759,6 +785,12 @@
 
     <footer>
         <p>&copy; 2026 Geofrey Waithaka | All Rights Reserved</p>
+
+        <!-- To link this somewhere else, change the href below -->
+        <a class="powered" href="demo-school.html" target="_blank" rel="noopener" title="See a demo of a J-Tech Software system">
+            <img src="jtech-logo.svg" alt="" width="26" height="26">
+            <span>Powered by J-Tech Software</span>
+        </a>
     </footer>
 
     <!-- HIRE CONFIRMATION: opens when a visitor presses "Hire" on a service.
